@@ -1,0 +1,7 @@
+.gallery__desc {
+  display: flex;
+  justify-content: space-between;
+  padding: 22px 18px 22px 21px;
+  box-sizing: border-box;
+  align-items: center;
+}

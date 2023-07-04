@@ -1,0 +1,14 @@
+.heart {
+  background-image: url('../../images/heart.svg');
+  background-color: #fff;
+  background-repeat: no-repeat;
+  width: 22px;
+  height: 19px;
+  border: none;
+}
+
+.heart:hover {
+  opacity: .5;
+}
+
+

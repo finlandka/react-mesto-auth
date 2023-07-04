@@ -1,0 +1,15 @@
+.button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px solid #fff;
+  border-radius: 0;
+  cursor: pointer;
+  padding: 0;
+  box-sizing: border-box;
+  transition: opacity .3s ease-in-out;
+}
+
+.button:hover {
+  opacity: .6;
+}

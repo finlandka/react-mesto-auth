@@ -1,0 +1,7 @@
+.popup_image::before {
+  opacity: .9;
+}
+
+.popup_image {
+  z-index: 4;
+}

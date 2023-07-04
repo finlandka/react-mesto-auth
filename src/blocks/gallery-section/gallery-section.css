@@ -1,0 +1,11 @@
+.gallery-section {
+  width: 100%;
+  padding: 46.25px 0 0;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 570px) {
+  .gallery-section {
+    padding: 36px 19px 0;
+  }
+}
