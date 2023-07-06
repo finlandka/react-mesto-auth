@@ -1,14 +1,22 @@
 import React from "react";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import ProtectedRouteElement from "./ProtectedRoute.js";
 import { api } from "../utils/Api.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
+import { LoggedInContext } from "../contexts/LoggedInContext.js";
 import Header from "./Header.js";
 import Main from "./Main.js";
+import Login from "./Login.js";
+import InfoTooltip from "./InfoTooltip.js";
+import Register from "./Register.js";
 import Footer from "./Footer.js";
 import ImagePopup from "./ImagePopup.js";
 import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup.js";
 import DeleteCardPopup from "./DeleteCardPopup.js";
+import imageSuccess from '../images/success.png';
+import imageFail from '../images/fail.png';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -24,7 +32,10 @@ function App() {
     link: "",
   });
   const [currentUser, setCurrentUser] = React.useState({});
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [cards, setCards] = React.useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     Promise.all([api.getCards(), api.getUserInfo()])
@@ -34,6 +45,16 @@ function App() {
       })
       .catch(console.error);
   }, []);
+
+  function handleLogin() {
+    setLoggedIn(true);
+  }
+
+  function handleOut() {
+    localStorage.removeItem('token');
+    navigate('/sign-in', {replace: true});
+
+  }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -124,20 +145,34 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
+      <LoggedInContext.Provider value={loggedIn}>
       <div className="page">
         <div className="page__container">
-          <Header />
-          <Main
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onConfirmCardDelete={handleDeleteCardClick}
-            cards={cards}
-          />
+          <Header location={location} handleOut={handleOut} />
+          <Routes>
+            <Route path="/" element={<ProtectedRouteElement element={
+              <Main
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              onCardLike={handleCardLike}
+              onConfirmCardDelete={handleDeleteCardClick}
+              cards={cards}
+            />
+            } />} />
+            <Route path="/sign-up" element={
+              <Register />
+            }/>
+            <Route path="/sign-in" element={
+              <Login handleLogin={handleLogin} />
+            }/>
+          </Routes>
+          
           <Footer />
         </div>
+        <InfoTooltip onClose={closeAllPopups} text="Вы успешно зарегистрировались!" image={imageSuccess} />
+        <InfoTooltip onClose={closeAllPopups} text="Что-то пошло не так! Попробуйте ещё раз." image={imageFail} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
@@ -161,6 +196,7 @@ function App() {
           cardToDelete={cardToDelete}
         />
       </div>
+      </LoggedInContext.Provider>
     </CurrentUserContext.Provider>
   );
 }
