@@ -8,9 +8,23 @@ function Header({ location, handleOut }) {
   return (
     <header className="header">
       <div className="header__logo"></div>
-      {location.pathname === '/sign-in' && !loggedIn ? <Link to='/sign-up' className="header__link">Зарегистрироваться</Link> :
-      location.pathname === '/sign-up' && !loggedIn ? <Link to='/sign-in' className="header__link">Войти</Link> :
-      <p className="header__link" style={{color: '#a9a9a9'}} onClick={handleOut}>Выйти</p> }
+      {location.pathname === "/sign-in" && !loggedIn ? (
+        <Link to="/sign-up" className="header__link">
+          Зарегистрироваться
+        </Link>
+      ) : location.pathname === "/sign-up" && !loggedIn ? (
+        <Link to="/sign-in" className="header__link">
+          Войти
+        </Link>
+      ) : (
+        <p
+          className="header__link"
+          style={{ color: "#a9a9a9" }}
+          onClick={handleOut}
+        >
+          Выйти
+        </p>
+      )}
     </header>
   );
 }

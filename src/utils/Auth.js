@@ -1,41 +1,41 @@
-const BASE_URL = 'https://auth.nomoreparties.co';
+const BASE_URL = "https://auth.nomoreparties.co";
 
 function register(password, email) {
   return fetch(`${BASE_URL}/signup`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({password, email})
+    body: JSON.stringify({ password, email }),
   })
-  .then((result) => {
-    try {
-      if (result.status === 200){
-        return result.json();
+    .then((result) => {
+      try {
+        if (result.status === 200) {
+          return result.json();
+        }
+      } catch (e) {
+        return e;
       }
-    } catch(e){
-      return (e)
-    }
-  })
-  .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
 }
 
 function authorization(password, email) {
-    return fetch(`${BASE_URL}/signin`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({password, email})
-      })
-      .then((result => result.json()))
-      .then((data) => {
-        if (data.token){
-        localStorage.setItem('token', data.token);
-        return data;
-        }
+  return fetch(`${BASE_URL}/signin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password, email }),
   })
-  .catch(err => console.log(err))
+    .then((result) => result.json())
+    .then((data) => {
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        return data;
+      }
+    })
+    .catch((err) => console.log(err));
 }
 
 export { register, authorization };

@@ -7,7 +7,7 @@ function InfoTooltip({ onClose, text, image }) {
           className="button button_action_close"
           aria-label="Закрыть"
         />
-        <img src={image} alt="" className="info-tooltip__image"/>
+        <img src={image} alt="" className="info-tooltip__image" />
         <p className="info-tooltip__text">{text}</p>
       </div>
     </div>

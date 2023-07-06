@@ -15,8 +15,8 @@ import EditProfilePopup from "./EditProfilePopup.js";
 import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup.js";
 import DeleteCardPopup from "./DeleteCardPopup.js";
-import imageSuccess from '../images/success.png';
-import imageFail from '../images/fail.png';
+import imageSuccess from "../images/success.png";
+import imageFail from "../images/fail.png";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -51,9 +51,8 @@ function App() {
   }
 
   function handleOut() {
-    localStorage.removeItem('token');
-    navigate('/sign-in', {replace: true});
-
+    localStorage.removeItem("token");
+    navigate("/sign-in", { replace: true });
   }
 
   function handleCardLike(card) {
@@ -146,56 +145,70 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <LoggedInContext.Provider value={loggedIn}>
-      <div className="page">
-        <div className="page__container">
-          <Header location={location} handleOut={handleOut} />
-          <Routes>
-            <Route path="/" element={<ProtectedRouteElement element={
-              <Main
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              onCardClick={handleCardClick}
-              onCardLike={handleCardLike}
-              onConfirmCardDelete={handleDeleteCardClick}
-              cards={cards}
-            />
-            } />} />
-            <Route path="/sign-up" element={
-              <Register />
-            }/>
-            <Route path="/sign-in" element={
-              <Login handleLogin={handleLogin} />
-            }/>
-          </Routes>
-          
-          <Footer />
+        <div className="page">
+          <div className="page__container">
+            <Header location={location} handleOut={handleOut} />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ProtectedRouteElement
+                    element={
+                      <Main
+                        onEditProfile={handleEditProfileClick}
+                        onAddPlace={handleAddPlaceClick}
+                        onEditAvatar={handleEditAvatarClick}
+                        onCardClick={handleCardClick}
+                        onCardLike={handleCardLike}
+                        onConfirmCardDelete={handleDeleteCardClick}
+                        cards={cards}
+                      />
+                    }
+                  />
+                }
+              />
+              <Route path="/sign-up" element={<Register />} />
+              <Route
+                path="/sign-in"
+                element={<Login handleLogin={handleLogin} />}
+              />
+            </Routes>
+
+            <Footer />
+          </div>
+          <InfoTooltip
+            onClose={closeAllPopups}
+            text="Вы успешно зарегистрировались!"
+            image={imageSuccess}
+          />
+          <InfoTooltip
+            onClose={closeAllPopups}
+            text="Что-то пошло не так! Попробуйте ещё раз."
+            image={imageFail}
+          />
+          <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+          />
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
+          />
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+          />
+          <DeleteCardPopup
+            isOpen={isDeleteCardPopupOpen}
+            onClose={closeAllPopups}
+            onCardDelete={handleCardDelete}
+            cardToDelete={cardToDelete}
+          />
         </div>
-        <InfoTooltip onClose={closeAllPopups} text="Вы успешно зарегистрировались!" image={imageSuccess} />
-        <InfoTooltip onClose={closeAllPopups} text="Что-то пошло не так! Попробуйте ещё раз." image={imageFail} />
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-        />
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-        />
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onAddPlace={handleAddPlaceSubmit}
-        />
-        <DeleteCardPopup
-          isOpen={isDeleteCardPopupOpen}
-          onClose={closeAllPopups}
-          onCardDelete={handleCardDelete}
-          cardToDelete={cardToDelete}
-        />
-      </div>
       </LoggedInContext.Provider>
     </CurrentUserContext.Provider>
   );
