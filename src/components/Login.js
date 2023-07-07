@@ -31,7 +31,7 @@ function Login({ handleLogin }) {
       .then((data) => {
         if (data.token) {
           setFormValue({ password: "", email: "" });
-          handleLogin();
+          handleLogin(email);
           navigate("/", { replace: true });
         }
       })

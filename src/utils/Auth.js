@@ -38,4 +38,16 @@ function authorization(password, email) {
     .catch((err) => console.log(err));
 }
 
-export { register, authorization };
+function getToken(token) {
+  return fetch(`${BASE_URL}/users/me`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization" : `Bearer ${token}`
+    }
+  })
+    .then((result) => result.json())
+    .catch((err) => console.log(err));
+}
+
+export { register, authorization, getToken };

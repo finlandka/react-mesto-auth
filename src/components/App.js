@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import ProtectedRouteElement from "./ProtectedRoute.js";
 import { api } from "../utils/Api.js";
+import { getToken } from '../utils/Auth.js';
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import { LoggedInContext } from "../contexts/LoggedInContext.js";
 import Header from "./Header.js";
@@ -33,6 +34,7 @@ function App() {
   });
   const [currentUser, setCurrentUser] = React.useState({});
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const [email, setEmail] = React.useState("");
   const [cards, setCards] = React.useState([]);
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,12 +48,33 @@ function App() {
       .catch(console.error);
   }, []);
 
-  function handleLogin() {
+  React.useEffect(() => { 
+    chekToken();
+  }, [])
+
+  function chekToken() {
+    if (localStorage.getItem('token')) {
+      const token = localStorage.getItem('token');
+      getToken(token).then(result => {
+        if (result) {
+          setLoggedIn(true);
+          setEmail(result.data.email);
+          navigate('/', {replace:true})
+        }
+      })
+
+    }
+  }
+
+  function handleLogin(email) {
     setLoggedIn(true);
+    setEmail(email);
   }
 
   function handleOut() {
     localStorage.removeItem("token");
+    setLoggedIn(false);
+    setEmail("");
     navigate("/sign-in", { replace: true });
   }
 
@@ -147,7 +170,7 @@ function App() {
       <LoggedInContext.Provider value={loggedIn}>
         <div className="page">
           <div className="page__container">
-            <Header location={location} handleOut={handleOut} />
+            <Header location={location} handleOut={handleOut} email={email} />
             <Routes>
               <Route
                 path="/"
