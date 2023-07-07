@@ -2,7 +2,7 @@ import React from "react";
 import { LoggedInContext } from "../contexts/LoggedInContext.js";
 import { Link } from "react-router-dom";
 
-function Header({ location, handleOut, email }) {
+function Header({ location, onSignOut, email }) {
   const loggedIn = React.useContext(LoggedInContext);
 
   return (
@@ -22,7 +22,7 @@ function Header({ location, handleOut, email }) {
           <span
             className="header__link"
             style={{ color: "#a9a9a9" }}
-            onClick={handleOut}
+            onClick={onSignOut}
           >
             Выйти
           </span>

@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import ProtectedRouteElement from "./ProtectedRoute.js";
 import { api } from "../utils/Api.js";
-import { getToken } from '../utils/Auth.js';
+import { getToken, register, authorization } from "../utils/Auth.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import { LoggedInContext } from "../contexts/LoggedInContext.js";
 import Header from "./Header.js";
@@ -36,6 +36,10 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [cards, setCards] = React.useState([]);
+  const [InfoTooltipSuccessOpen, setInfoTooltipSuccessOpen] =
+    React.useState(false);
+  const [InfoTooltipFailedOpen, setInfoTooltipFailedOpen] =
+    React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -48,34 +52,60 @@ function App() {
       .catch(console.error);
   }, []);
 
-  React.useEffect(() => { 
-    chekToken();
-  }, [])
-
-  function chekToken() {
-    if (localStorage.getItem('token')) {
-      const token = localStorage.getItem('token');
-      getToken(token).then(result => {
+  React.useEffect(() => {
+    if (localStorage.getItem("token")) {
+      const token = localStorage.getItem("token");
+      getToken(token).then((result) => {
         if (result) {
           setLoggedIn(true);
           setEmail(result.data.email);
-          navigate('/', {replace:true})
+          navigate("/", { replace: true });
+        }
+      });
+    }
+  }, []);
+
+  function onLogin(password, email) {
+    authorization(password, email)
+      .then((data) => {
+        if (data.token) {
+          setLoggedIn(true);
+          setEmail(email);
+          localStorage.setItem("token", data.token);
+          navigate("/", { replace: true });
         }
       })
-
-    }
+      .catch((err) => console.log(err));
   }
 
-  function handleLogin(email) {
-    setLoggedIn(true);
-    setEmail(email);
-  }
-
-  function handleOut() {
+  function onSignOut() {
     localStorage.removeItem("token");
     setLoggedIn(false);
     setEmail("");
-    navigate("/sign-in", { replace: true });
+    //navigate("/sign-in", { replace: true });
+    window.history.pushState({}, "", "/sign-in");
+  }
+
+  function onRegister(password, email) {
+    register(password, email)
+      .then((result) => {
+        console.log(result);
+        if (result.error || result.message) {
+          handleFailedAuth();
+        } else {
+          handleSuccessAuth();
+        }
+      })
+
+      .catch((err) => handleSuccessAuth());
+  }
+
+  function handleSuccessAuth() {
+    setInfoTooltipSuccessOpen(true);
+  }
+
+  function handleFailedAuth() {
+    setInfoTooltipFailedOpen(true);
   }
 
   function handleCardLike(card) {
@@ -170,7 +200,7 @@ function App() {
       <LoggedInContext.Provider value={loggedIn}>
         <div className="page">
           <div className="page__container">
-            <Header location={location} handleOut={handleOut} email={email} />
+            <Header location={location} onSignOut={onSignOut} email={email} />
             <Routes>
               <Route
                 path="/"
@@ -190,22 +220,27 @@ function App() {
                   />
                 }
               />
-              <Route path="/sign-up" element={<Register />} />
               <Route
-                path="/sign-in"
-                element={<Login handleLogin={handleLogin} />}
+                path="/sign-up"
+                element={<Register onRegister={onRegister} />}
               />
+              <Route path="/sign-in" element={<Login onLogin={onLogin} />} />
             </Routes>
 
             <Footer />
           </div>
           <InfoTooltip
-            onClose={closeAllPopups}
+            isOpen={InfoTooltipSuccessOpen}
+            onClose={() => {
+              setInfoTooltipSuccessOpen(false);
+              navigate("/sign-in", { replace: true });
+            }}
             text="Вы успешно зарегистрировались!"
             image={imageSuccess}
           />
           <InfoTooltip
-            onClose={closeAllPopups}
+            isOpen={InfoTooltipFailedOpen}
+            onClose={() => setInfoTooltipFailedOpen(false)}
             text="Что-то пошло не так! Попробуйте ещё раз."
             image={imageFail}
           />

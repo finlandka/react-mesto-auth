@@ -9,15 +9,11 @@ function register(password, email) {
     body: JSON.stringify({ password, email }),
   })
     .then((result) => {
-      try {
-        if (result.status === 200) {
-          return result.json();
-        }
-      } catch (e) {
-        return e;
-      }
+      return result.json();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return err;
+    });
 }
 
 function authorization(password, email) {
@@ -29,13 +25,10 @@ function authorization(password, email) {
     body: JSON.stringify({ password, email }),
   })
     .then((result) => result.json())
-    .then((data) => {
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        return data;
-      }
-    })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      return err;
+    });
 }
 
 function getToken(token) {
@@ -43,8 +36,8 @@ function getToken(token) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization" : `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   })
     .then((result) => result.json())
     .catch((err) => console.log(err));

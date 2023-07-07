@@ -1,31 +1,21 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { register } from "../utils/Auth.js";
+import React from "react";
+import { Link } from "react-router-dom";
 
-function Register() {
-  const [formValue, setFormValue] = useState({
-    password: "",
-    email: "",
-  });
+function Register({ onRegister }) {
+  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState("");
 
-  const navigate = useNavigate();
+  function handleChangePassword(e) {
+    setPassword(e.target.value);
+  }
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
+  function handleChangeEmail(e) {
+    setEmail(e.target.value);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    const { password, email } = formValue;
-    register(password, email).then(() => {
-      navigate("/sign-in", { replace: true });
-    });
+    onRegister(password, email);
   }
 
   return (
@@ -37,7 +27,8 @@ function Register() {
           type="email"
           placeholder="Email"
           name="email"
-          onChange={handleChange}
+          value={email}
+          onChange={handleChangeEmail}
           required
         />
         <input
@@ -45,7 +36,8 @@ function Register() {
           type="password"
           placeholder="Пароль"
           name="password"
-          onChange={handleChange}
+          value={password}
+          onChange={handleChangePassword}
           required
         />
         <button className="form__button" type="submit">
