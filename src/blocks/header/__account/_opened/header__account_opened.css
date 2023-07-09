@@ -1,0 +1,14 @@
+.header__account_opened {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  grid-column: 1 / span 2;
+  grid-row: 1 / 2;
+  gap: 18px 0;
+  align-items: center;
+  align-self: start;
+  padding: 12px 0 40px 0;
+  width: 100%;
+  transform: translateY(0);
+  opacity: 1;
+}

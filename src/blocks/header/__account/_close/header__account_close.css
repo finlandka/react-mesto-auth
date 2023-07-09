@@ -1,0 +1,6 @@
+.header__account_close {
+  background-image: url(../../../../images/close-button-20.png);
+  width: 20px;
+  height: 20px;
+  justify-self: end;
+}

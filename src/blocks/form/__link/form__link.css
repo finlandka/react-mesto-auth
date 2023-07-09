@@ -6,4 +6,11 @@
   line-height: 16.94px;
   color: #fff;
   text-align: center;
+  display: block;
+}
+
+@media screen and (max-width: 570px) {
+  .form__link {
+    margin: 20px 0 0;
+  }
 }

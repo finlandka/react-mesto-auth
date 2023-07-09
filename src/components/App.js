@@ -63,7 +63,7 @@ function App() {
         }
       });
     }
-  }, []);
+  }, [navigate]);
 
   function onLogin(password, email) {
     authorization(password, email)

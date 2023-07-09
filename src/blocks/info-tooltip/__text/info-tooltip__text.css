@@ -7,3 +7,10 @@
   color: #000;
   text-align: center;
 }
+
+@media screen and (max-width: 570px) {
+  .info-tooltip__text {
+    font-size: 18px;
+    line-height: 21.78px;
+  }
+}
