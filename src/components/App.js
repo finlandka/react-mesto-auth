@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import ProtectedRouteElement from "./ProtectedRoute.js";
 import { api } from "../utils/Api.js";
 import { getToken, register, authorization } from "../utils/Auth.js";
@@ -40,28 +40,30 @@ function App() {
     React.useState(false);
   const [InfoTooltipFailedOpen, setInfoTooltipFailedOpen] =
     React.useState(false);
-  const location = useLocation();
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    if (loggedIn) {
     Promise.all([api.getCards(), api.getUserInfo()])
       .then(([cards, userData]) => {
         setCurrentUser(userData);
         setCards(cards);
       })
       .catch(console.error);
-  }, []);
+}}, [loggedIn]);
 
   React.useEffect(() => {
     if (localStorage.getItem("token")) {
       const token = localStorage.getItem("token");
-      getToken(token).then((result) => {
-        if (result) {
-          setLoggedIn(true);
-          setEmail(result.data.email);
-          navigate("/", { replace: true });
-        }
-      });
+      getToken(token)
+        .then((result) => {
+          if (result) {
+            setLoggedIn(true);
+            setEmail(result.data.email);
+            navigate("/", { replace: true });
+          }
+        })
+        .catch((err) => console.log(err));
     }
   }, [navigate]);
 
@@ -88,16 +90,10 @@ function App() {
 
   function onRegister(password, email) {
     register(password, email)
-      .then((result) => {
-        console.log(result);
-        if (result.error || result.message) {
-          handleFailedAuth();
-        } else {
-          handleSuccessAuth();
-        }
+      .then(() => {
+        handleSuccessAuth();
       })
-
-      .catch((err) => handleSuccessAuth());
+      .catch(() => handleFailedAuth());
   }
 
   function handleSuccessAuth() {
@@ -200,10 +196,10 @@ function App() {
       <LoggedInContext.Provider value={loggedIn}>
         <div className="page">
           <div className="page__container">
-            <Header location={location} onSignOut={onSignOut} email={email} />
+            <Header onSignOut={onSignOut} email={email} />
             <Routes>
               <Route
-                path="/"
+                path="*"
                 element={
                   <ProtectedRouteElement
                     element={

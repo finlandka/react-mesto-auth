@@ -1,5 +1,12 @@
 const BASE_URL = "https://auth.nomoreparties.co";
 
+const getResponseData = (res) => {
+  if (!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`); 
+  }
+  return res.json();
+}
+
 function register(password, email) {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
@@ -7,13 +14,7 @@ function register(password, email) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ password, email }),
-  })
-    .then((result) => {
-      return result.json();
-    })
-    .catch((err) => {
-      return err;
-    });
+  }).then((result) => getResponseData(result));
 }
 
 function authorization(password, email) {
@@ -24,11 +25,7 @@ function authorization(password, email) {
     },
     body: JSON.stringify({ password, email }),
   })
-    .then((result) => result.json())
-    .catch((err) => {
-      console.log(err);
-      return err;
-    });
+    .then((result) => getResponseData(result))
 }
 
 function getToken(token) {
@@ -38,9 +35,7 @@ function getToken(token) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  })
-    .then((result) => result.json())
-    .catch((err) => console.log(err));
+  }).then((result) => getResponseData(result));
 }
 
 export { register, authorization, getToken };
